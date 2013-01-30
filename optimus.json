@@ -10,7 +10,7 @@
       ]
   	},
   "isPrivate" : false,
-  "mainDetect" : [ {"files" : ["optimus.json"]}],
+  "mainDetect" : [ ],
   "supportDetect" : [],
   "packageIgnore" : [],
   "priority" : 1000
