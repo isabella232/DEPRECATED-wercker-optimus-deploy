@@ -40,7 +40,8 @@
         "options" : {
             "commands" : [
                 "curl -H \"Accept: application/json\" -u :$HEROKU_KEY -X DELETE https://api.heroku.com/user/keys/deploy%40wercker%2Ecom"
-            ]
+            ],
+            "runAlways" : true
         }
     }
 ],
@@ -57,9 +58,7 @@
     },
     {"name" : "deploy", "type" : "commands-step", "blocking" : false, "retry" : true,
         "options" : {
-            "commands" : [
-                "git push -f git@heroku.com:$HEROKU_APP_NAME.git master"
-            ]
+            "commands" : ["git push -f git@heroku.com:$HEROKU_APP_NAME.git master"]
         }
     }
 ],

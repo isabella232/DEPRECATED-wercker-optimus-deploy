@@ -1,6 +1,6 @@
 {
 	"name" : "deploy",
-	"version" : "0.0.1",
+	"version" : "0.0.3",
 	"stackInfo" :
   	{
       "stackVersions" : ["0.0.0"],
