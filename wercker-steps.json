@@ -1,67 +1,84 @@
 {
-"deploySetup": [
-    {"name" : "deploy_setup", "type" : "commands-step", "blocking" : true,
-        "options" : {
-            "commands" : [
-                "cd $WERCKER_ROOT",
-                "curl -H \"Accept: application/json\" -u :$HEROKU_KEY https://api.heroku.com/apps/$HEROKU_APP_NAME",
-                "echo \"machine api.heroku.com\" > /home/ubuntu/.netrc",
-                "echo \"  login $HEROKU_USER\" >> /home/ubuntu/.netrc",
-                "echo \"  password $HEROKU_KEY\" >> /home/ubuntu/.netrc",
-                "chmod 0600 /home/ubuntu/.netrc",
-                "git config --global user.name \"$HEROKU_USER\"",
-                "git config --global user.email \"$HEROKU_USER\"",
-                "cd",
-                "mkdir -p key",
-                "cd key",
-                "ssh-keygen -f key -C 'deploy@wercker.com' -N '' -t rsa -q",
-                "heroku keys:add /home/ubuntu/key/key.pub",
-                "echo 'ssh -t -t -v -e none -i \"/home/ubuntu/key/key\" -o \"StrictHostKeyChecking no\" $@' > gitssh",
-                "chmod 0700 /home/ubuntu/key/gitssh",
-                "export GIT_SSH=/home/ubuntu/key/gitssh",
-                "cd $WERCKER_ROOT",
-                "heroku version"
-            ]
-        }
+  "deploySetup": [
+    {
+      "name": "deploy setup",
+      "type": "commands-step",
+      "blocking": true,
+      "options": {
+        "commands": [
+          "cd $WERCKER_ROOT",
+          "curl -H \"Accept: application/json\" -u :$HEROKU_KEY https://api.heroku.com/apps/$HEROKU_APP_NAME",
+          "echo \"machine api.heroku.com\" > /home/ubuntu/.netrc",
+          "echo \"  login $HEROKU_USER\" >> /home/ubuntu/.netrc",
+          "echo \"  password $HEROKU_KEY\" >> /home/ubuntu/.netrc",
+          "chmod 0600 /home/ubuntu/.netrc",
+          "git config --global user.name \"$HEROKU_USER\"",
+          "git config --global user.email \"$HEROKU_USER\"",
+          "cd",
+          "mkdir -p key",
+          "cd key",
+          "ssh-keygen -f key -C 'deploy@wercker.com' -N '' -t rsa -q",
+          "heroku keys:add /home/ubuntu/key/key.pub",
+          "echo 'ssh -t -t -v -e none -i \"/home/ubuntu/key/key\" -o \"StrictHostKeyChecking no\" $@' > gitssh",
+          "chmod 0700 /home/ubuntu/key/gitssh",
+          "export GIT_SSH=/home/ubuntu/key/gitssh",
+          "cd $WERCKER_ROOT",
+          "heroku version"
+        ]
+      }
     }
-],
-"deployPreDeploy": [
-    {"name" : "deploy_pre_deploy", "type" : "commands-step", "blocking" : true,
-        "options" : {
-            "commands" : [
-                "echo 1"
-            ]
-        }
+  ],
+  "deployPreDeploy": [
+    {
+      "name": "deploy pre-deploy",
+      "type": "commands-step",
+      "blocking": true,
+      "options": {
+        "commands": [
+          "echo 1"
+        ]
+      }
     }
-
-],
-"deployPostDeploy": [
-    {"name" : "deploy_post_deploy", "type" : "commands-step", "blocking" : true,
-        "options" : {
-            "commands" : [
-                "curl -H \"Accept: application/json\" -u :$HEROKU_KEY -X DELETE https://api.heroku.com/user/keys/deploy%40wercker%2Ecom"
-            ],
-            "runAlways" : true
-        }
+  ],
+  "deployPostDeploy": [
+    {
+      "name": "deploy post-deploy",
+      "type": "commands-step",
+      "blocking": true,
+      "options": {
+        "commands": [
+          "curl -H \"Accept: application/json\" -u :$HEROKU_KEY -X DELETE https://api.heroku.com/user/keys/deploy%40wercker%2Ecom"
+        ],
+        "runAlways": true
+      }
     }
-],
-"deploy": [
-    {"name" : "deploy_git_prepare", "type" : "commands-step", "blocking" : false,
-        "options" : {
-            "commands" : [
-                "git init",
-                "git add .",
-                "git commit -m 'wercker deploy'",
-                "echo git@heroku.com:$HEROKU_APP_NAME.git"
-            ]
-        }
+  ],
+  "deploy": [
+    {
+      "name": "deploy git prepare",
+      "type": "commands-step",
+      "blocking": false,
+      "options": {
+        "commands": [
+          "git init",
+          "git add .",
+          "git commit -m 'wercker deploy'",
+          "echo git@heroku.com:$HEROKU_APP_NAME.git"
+        ]
+      }
     },
-    {"name" : "deploy", "type" : "commands-step", "blocking" : false, "retry" : true,
-        "options" : {
-            "commands" : ["git push -f git@heroku.com:$HEROKU_APP_NAME.git master"]
-        }
+    {
+      "name": "deploy",
+      "type": "commands-step",
+      "blocking": false,
+      "retry": true,
+      "options": {
+        "commands": [
+          "git push -f git@heroku.com:$HEROKU_APP_NAME.git master"
+        ]
+      }
     }
-],
-"preDeployTemplate": "heroku run \"[COMMAND]\" --app $HEROKU_APP_NAME",
-"postDeployTemplate": "heroku run \"[COMMAND]\" --app $HEROKU_APP_NAME"
+  ],
+  "preDeployTemplate": "heroku run \"[COMMAND]\" --app $HEROKU_APP_NAME",
+  "postDeployTemplate": "heroku run \"[COMMAND]\" --app $HEROKU_APP_NAME"
 }
